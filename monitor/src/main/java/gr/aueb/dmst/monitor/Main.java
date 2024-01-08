@@ -13,6 +13,7 @@ import com.github.dockerjava.transport.DockerHttpClient;
 
 public class Main {
     public static void main(String[] args) {
+
         DockerClient dockerClient = createDockerClient();
         BlockingQueue<ContainerInstanceMetrics> queue = new LinkedBlockingQueue<>();
         Database db = new Database();
