@@ -10,3 +10,4 @@ public record ContainerInstanceMetrics(
 ) {
     
 }
+// αντι για images και instances. Δημιουργεί αντικείμενο containers. Το καναμε για ευκολότερη μοντελοποίηση και υπάρχουν στο ΓΚΙΤ
