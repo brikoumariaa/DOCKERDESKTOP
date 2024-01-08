@@ -1,5 +1,7 @@
 package gr.aueb.dmst.monitor;
 
+// Record που υλοποιεί τα DockerInstances και Images. Χρησιμοποιείται για μεγαλύτερη ευκολία στην μοντελοποίησή τους
+// Δυνατότητα δημιουργία αντικειμένων χωρίς κατασκευαστή
 public record ContainerInstanceMetrics(
     String id,
     String image,
@@ -10,4 +12,4 @@ public record ContainerInstanceMetrics(
 ) {
     
 }
-// αντι για images και instances. Δημιουργεί αντικείμενο containers. Το καναμε για ευκολότερη μοντελοποίηση και υπάρχουν στο ΓΚΙΤ
+
