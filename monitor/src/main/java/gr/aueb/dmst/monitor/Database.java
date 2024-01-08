@@ -11,6 +11,7 @@ public class Database {
     public Connection getConnection() {
         Connection conn = null;
 
+// Try statement για να πραγματοποιήσουμε σύνδεση με την Βάση Δεδομένων
         try {
             conn = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
 		} catch (Exception e) {
