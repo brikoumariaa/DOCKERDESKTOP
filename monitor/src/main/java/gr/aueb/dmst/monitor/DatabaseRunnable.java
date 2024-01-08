@@ -8,6 +8,10 @@ import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.concurrent.BlockingQueue;
 
+// Η κλάση αυτή υλοποιεί την Runnable για να μπορεί να τρέχει σαν Thread
+// Παίρνει instances από ContainerInstanceMetrics
+// Ελέγχει αν υπάρχουν στο Container και τα κάνει update ανάλογα
+
 public class DatabaseRunnable implements Runnable {
     private final BlockingQueue<ContainerInstanceMetrics> queue;
     private final Database db;
@@ -24,8 +28,13 @@ public class DatabaseRunnable implements Runnable {
     public void run() {
         while (true) {
             try (Connection conn = db.getConnection()) {
+                
+                // Παίρνουμε το αντίστοιχο instance από την ουρά
+                
                 ContainerInstanceMetrics c = queue.take();
 
+                // Ελέγχουμε αν υπάρχει στην βάση, αλλιώς δημιουργούμε νέο αντικείμενο (record)
+                
                 if (!containerInstanceExists(conn, c.id())) {
                     createContainerInstanceRecord(
                         conn, 
@@ -35,6 +44,8 @@ public class DatabaseRunnable implements Runnable {
                     );
                 }
 
+                // Αν υπαρχει το κάνουμε update 
+                
                 createContainerMetricsRecord(
                     conn,
                     Timestamp.from(ZonedDateTime.parse(c.timestamp()).toInstant()),
@@ -51,6 +62,7 @@ public class DatabaseRunnable implements Runnable {
         }
     }
 
+    // Μέθοδος που ελέγχει αν υπάρχει το αντίστοιχο Instance στην βάση μας
     public boolean containerInstanceExists(Connection conn, String containerId) {
         boolean result = false;
         String queryString = "SELECT * FROM container_instances WHERE id = ?;";
