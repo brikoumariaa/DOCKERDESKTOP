@@ -63,6 +63,7 @@ public class DatabaseRunnable implements Runnable {
     }
 
     // Μέθοδος που ελέγχει αν υπάρχει το αντίστοιχο Instance στην βάση μας
+    
     public boolean containerInstanceExists(Connection conn, String containerId) {
         boolean result = false;
         String queryString = "SELECT * FROM container_instances WHERE id = ?;";
@@ -78,6 +79,8 @@ public class DatabaseRunnable implements Runnable {
         return result;
     }
 
+    //  Inserts a new record into the container_instances table
+    
     public void createContainerInstanceRecord(
         Connection conn,
         String containerId,
@@ -97,6 +100,8 @@ public class DatabaseRunnable implements Runnable {
             e.printStackTrace();
         }
     }
+
+    // Inserts a new record into the container_metrics table
 
     public void createContainerMetricsRecord(
         Connection conn,
