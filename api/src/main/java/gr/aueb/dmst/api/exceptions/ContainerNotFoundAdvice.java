@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class ContainerNotFoundAdvice {
     @ResponseBody
+
+    // Handle ContainerNotFoundExceptions when occured inside the SpringBoot Application
+    
     @ExceptionHandler(ContainerNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String containerNotFoundHandler(ContainerNotFoundException ex) {
