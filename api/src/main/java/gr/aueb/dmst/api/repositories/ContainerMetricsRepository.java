@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import gr.aueb.dmst.api.entities.ContainerMetrics;
 
+// A repository for ContainerMetrics
+
 public interface ContainerMetricsRepository extends JpaRepository<ContainerMetrics, Long> {
     List<ContainerMetrics> findAllByContainerInstances_IdStartingWithAndMeasurementTimestampBetween(
         String containerId,
