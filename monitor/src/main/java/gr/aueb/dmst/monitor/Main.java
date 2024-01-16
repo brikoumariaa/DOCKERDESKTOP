@@ -13,7 +13,7 @@ import com.github.dockerjava.transport.DockerHttpClient;
 
 public class Main {
     public static void main(String[] args) {
-
+ 
         DockerClient dockerClient = createDockerClient();
         BlockingQueue<ContainerInstanceMetrics> queue = new LinkedBlockingQueue<>();
         Database db = new Database();
@@ -21,6 +21,8 @@ public class Main {
         MonitorRunnable monitorRunnable = new MonitorRunnable(dockerClient, queue);
         DatabaseRunnable databaseRunnable = new DatabaseRunnable(queue, db);
 
+        // Use runnable classes to create each Thread inside the main class
+        
         Thread monitorThread = new Thread(monitorRunnable, "Monitor");
         Thread databaseThread = new Thread(databaseRunnable, "Database");
 
@@ -29,11 +31,16 @@ public class Main {
     }
 
     public static DockerClient createDockerClient() {
+        
+        // Set up connection with Docker Daemon in specified location
+        
         DockerClientConfig config = DefaultDockerClientConfig
                 .createDefaultConfigBuilder()
                 .withDockerHost("tcp://localhost:2375")
                 .build();
-
+        
+        // Create DckerHttpClient
+        
         DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
                 .dockerHost(config.getDockerHost())
                 .maxConnections(100)
