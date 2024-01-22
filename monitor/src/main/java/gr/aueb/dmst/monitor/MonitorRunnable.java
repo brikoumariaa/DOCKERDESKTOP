@@ -24,16 +24,18 @@ public class MonitorRunnable implements Runnable {
     public void run() {
         while (true) {
             try {
+                // List all Docker containers
                 List<Container> containers = dockerClient
                         .listContainersCmd()
                         .withShowAll(false)
                         .exec();
-
+                // Iterate over each container
                 for (Container container : containers) {
                     String containerId = container.getId();
                     String image = container.getImage();
                     String name = container.getNames()[0].substring(1);
 
+                    // Retrieve container statistics
                     dockerClient.statsCmd(containerId)
                         .withNoStream(true)
                         .exec(new ResultCallback.Adapter<Statistics>() {
@@ -44,6 +46,7 @@ public class MonitorRunnable implements Runnable {
                                 double memoryPercent = computeMemoryPercent(stats);
 
                                 try {
+                                    // Put metrics into the blocking queue
                                     queue.put(
                                         new ContainerInstanceMetrics(
                                             containerId,
@@ -61,6 +64,7 @@ public class MonitorRunnable implements Runnable {
                             }
                         });
                 }
+                // Sleep for 10 seconds before the next iteration
                 Thread.sleep(10_000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -68,13 +72,15 @@ public class MonitorRunnable implements Runnable {
             }
         }
     }
+    
+    // Compute CPU percentage based on container statistics
     public double computeCpuPercent(Statistics stats) {
         long cpuDelta = stats.getCpuStats().getCpuUsage().getTotalUsage() - stats.getPreCpuStats().getCpuUsage().getTotalUsage();
         long systemDelta = stats.getCpuStats().getSystemCpuUsage() - stats.getPreCpuStats().getSystemCpuUsage();
         int numberCores = stats.getCpuStats().getCpuUsage().getPercpuUsage().size();
         return (((double) cpuDelta / systemDelta) * numberCores) * 100;
     }
-
+    // Compute memory percentage based on container statistics
     public double computeMemoryPercent(Statistics stats) {
         long memoryUsage = stats.getMemoryStats().getUsage();
         long memoryLimit = stats.getMemoryStats().getLimit();
